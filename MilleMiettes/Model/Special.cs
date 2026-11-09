@@ -8,7 +8,7 @@ namespace MilleMiettes
 {
     public class Special
     {
-        public Special(string iD, string name, string picture, double price)
+        public Special(string iD, string name, string picture, int price)
         {
             ID = iD;
             Name = name;
@@ -19,6 +19,9 @@ namespace MilleMiettes
         public string ID { get; private set; }
         public string Name { get; private set; }
         public string Picture { get; private set; }
-        public double Price { get; set; }
+        /// <summary>
+        ///  Price in centimes (CHF 3.50 = 350)
+        /// </summary>
+        public int Price { get; set; }
     }
 }
