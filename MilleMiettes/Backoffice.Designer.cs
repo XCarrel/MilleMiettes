@@ -28,12 +28,136 @@
         /// </summary>
         private void InitializeComponent()
         {
-            this.components = new System.ComponentModel.Container();
-            this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(800, 450);
-            this.Text = "Form1";
+            pictureBoxLogo = new PictureBox();
+            labelBusinessName = new Label();
+            labelBusinessId = new Label();
+            groupBoxSpecial = new GroupBox();
+            labelSpecialPrice = new Label();
+            labelSpecialId = new Label();
+            labelSpecialName = new Label();
+            pictureBoxSpecial = new PictureBox();
+            buttonSave = new Button();
+            ((System.ComponentModel.ISupportInitialize)pictureBoxLogo).BeginInit();
+            groupBoxSpecial.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)pictureBoxSpecial).BeginInit();
+            SuspendLayout();
+            //
+            // pictureBoxLogo
+            //
+            pictureBoxLogo.Location = new Point(20, 20);
+            pictureBoxLogo.Name = "pictureBoxLogo";
+            pictureBoxLogo.Size = new Size(300, 150);
+            pictureBoxLogo.SizeMode = PictureBoxSizeMode.Zoom;
+            pictureBoxLogo.TabIndex = 0;
+            pictureBoxLogo.TabStop = false;
+            //
+            // labelBusinessName
+            //
+            labelBusinessName.AutoSize = true;
+            labelBusinessName.Font = new Font("Segoe UI", 20F, FontStyle.Bold);
+            labelBusinessName.Location = new Point(340, 50);
+            labelBusinessName.Name = "labelBusinessName";
+            labelBusinessName.Size = new Size(0, 37);
+            labelBusinessName.TabIndex = 1;
+            //
+            // labelBusinessId
+            //
+            labelBusinessId.AutoSize = true;
+            labelBusinessId.ForeColor = SystemColors.GrayText;
+            labelBusinessId.Location = new Point(344, 100);
+            labelBusinessId.Name = "labelBusinessId";
+            labelBusinessId.Size = new Size(0, 15);
+            labelBusinessId.TabIndex = 2;
+            //
+            // groupBoxSpecial
+            //
+            groupBoxSpecial.Controls.Add(labelSpecialPrice);
+            groupBoxSpecial.Controls.Add(labelSpecialId);
+            groupBoxSpecial.Controls.Add(labelSpecialName);
+            groupBoxSpecial.Controls.Add(pictureBoxSpecial);
+            groupBoxSpecial.Location = new Point(20, 190);
+            groupBoxSpecial.Name = "groupBoxSpecial";
+            groupBoxSpecial.Size = new Size(720, 330);
+            groupBoxSpecial.TabIndex = 3;
+            groupBoxSpecial.TabStop = false;
+            groupBoxSpecial.Text = "Spécial";
+            //
+            // labelSpecialPrice
+            //
+            labelSpecialPrice.AutoSize = true;
+            labelSpecialPrice.Font = new Font("Segoe UI", 16F);
+            labelSpecialPrice.Location = new Point(320, 160);
+            labelSpecialPrice.Name = "labelSpecialPrice";
+            labelSpecialPrice.Size = new Size(0, 30);
+            labelSpecialPrice.TabIndex = 3;
+            //
+            // labelSpecialId
+            //
+            labelSpecialId.AutoSize = true;
+            labelSpecialId.ForeColor = SystemColors.GrayText;
+            labelSpecialId.Location = new Point(323, 120);
+            labelSpecialId.Name = "labelSpecialId";
+            labelSpecialId.Size = new Size(0, 15);
+            labelSpecialId.TabIndex = 2;
+            //
+            // labelSpecialName
+            //
+            labelSpecialName.AutoSize = true;
+            labelSpecialName.Font = new Font("Segoe UI", 16F, FontStyle.Bold);
+            labelSpecialName.Location = new Point(320, 80);
+            labelSpecialName.Name = "labelSpecialName";
+            labelSpecialName.Size = new Size(0, 30);
+            labelSpecialName.TabIndex = 1;
+            //
+            // pictureBoxSpecial
+            //
+            pictureBoxSpecial.Location = new Point(20, 30);
+            pictureBoxSpecial.Name = "pictureBoxSpecial";
+            pictureBoxSpecial.Size = new Size(280, 280);
+            pictureBoxSpecial.SizeMode = PictureBoxSizeMode.Zoom;
+            pictureBoxSpecial.TabIndex = 0;
+            pictureBoxSpecial.TabStop = false;
+            //
+            // buttonSave
+            //
+            buttonSave.Location = new Point(620, 535);
+            buttonSave.Name = "buttonSave";
+            buttonSave.Size = new Size(120, 32);
+            buttonSave.TabIndex = 4;
+            buttonSave.Text = "Enregistrer";
+            buttonSave.UseVisualStyleBackColor = true;
+            buttonSave.Click += buttonSave_Click;
+            //
+            // Backoffice
+            //
+            AutoScaleDimensions = new SizeF(7F, 15F);
+            AutoScaleMode = AutoScaleMode.Font;
+            ClientSize = new Size(760, 585);
+            Controls.Add(buttonSave);
+            Controls.Add(groupBoxSpecial);
+            Controls.Add(labelBusinessId);
+            Controls.Add(labelBusinessName);
+            Controls.Add(pictureBoxLogo);
+            Name = "Backoffice";
+            Text = "Backoffice";
+            ((System.ComponentModel.ISupportInitialize)pictureBoxLogo).EndInit();
+            groupBoxSpecial.ResumeLayout(false);
+            groupBoxSpecial.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)pictureBoxSpecial).EndInit();
+            ResumeLayout(false);
+            PerformLayout();
         }
 
         #endregion
+
+        private PictureBox pictureBoxLogo;
+        private Label labelBusinessName;
+        private Label labelBusinessId;
+        private GroupBox groupBoxSpecial;
+        private Label labelSpecialPrice;
+        private Label labelSpecialId;
+        private Label labelSpecialName;
+        private PictureBox pictureBoxSpecial;
+        private Button buttonSave;
     }
 }
