@@ -30,6 +30,9 @@ namespace MilleMiettes
 
         private void buttonSave_Click(object sender, EventArgs e)
         {
+            // Copy the edited values from the form into the model
+            me.Special.Price = (double)numericUpDownSpecialPrice.Value;
+
             SaveBusiness(me);
             MessageBox.Show($"Enregistré dans {DataFile}", "Backoffice");
         }
@@ -57,7 +60,7 @@ namespace MilleMiettes
             pictureBoxSpecial.Image = LoadImage(special.Picture);
             labelSpecialName.Text = special.Name;
             labelSpecialId.Text = special.ID;
-            labelSpecialPrice.Text = $"{special.Price:F2} CHF";
+            numericUpDownSpecialPrice.Value = (decimal)special.Price;
         }
 
         /// <summary>

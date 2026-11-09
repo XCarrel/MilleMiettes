@@ -32,13 +32,15 @@
             labelBusinessName = new Label();
             labelBusinessId = new Label();
             groupBoxSpecial = new GroupBox();
-            labelSpecialPrice = new Label();
+            numericUpDownSpecialPrice = new NumericUpDown();
+            labelSpecialCurrency = new Label();
             labelSpecialId = new Label();
             labelSpecialName = new Label();
             pictureBoxSpecial = new PictureBox();
             buttonSave = new Button();
             ((System.ComponentModel.ISupportInitialize)pictureBoxLogo).BeginInit();
             groupBoxSpecial.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)numericUpDownSpecialPrice).BeginInit();
             ((System.ComponentModel.ISupportInitialize)pictureBoxSpecial).BeginInit();
             SuspendLayout();
             //
@@ -71,7 +73,8 @@
             //
             // groupBoxSpecial
             //
-            groupBoxSpecial.Controls.Add(labelSpecialPrice);
+            groupBoxSpecial.Controls.Add(labelSpecialCurrency);
+            groupBoxSpecial.Controls.Add(numericUpDownSpecialPrice);
             groupBoxSpecial.Controls.Add(labelSpecialId);
             groupBoxSpecial.Controls.Add(labelSpecialName);
             groupBoxSpecial.Controls.Add(pictureBoxSpecial);
@@ -84,12 +87,25 @@
             //
             // labelSpecialPrice
             //
-            labelSpecialPrice.AutoSize = true;
-            labelSpecialPrice.Font = new Font("Segoe UI", 16F);
-            labelSpecialPrice.Location = new Point(320, 160);
-            labelSpecialPrice.Name = "labelSpecialPrice";
-            labelSpecialPrice.Size = new Size(0, 30);
-            labelSpecialPrice.TabIndex = 3;
+            numericUpDownSpecialPrice.DecimalPlaces = 2;
+            numericUpDownSpecialPrice.Font = new Font("Segoe UI", 16F);
+            numericUpDownSpecialPrice.Increment = new decimal(new int[] { 10, 0, 0, 131072 });
+            numericUpDownSpecialPrice.Location = new Point(320, 160);
+            numericUpDownSpecialPrice.Maximum = new decimal(new int[] { 1000, 0, 0, 0 });
+            numericUpDownSpecialPrice.Name = "numericUpDownSpecialPrice";
+            numericUpDownSpecialPrice.Size = new Size(110, 36);
+            numericUpDownSpecialPrice.TabIndex = 3;
+            numericUpDownSpecialPrice.TextAlign = HorizontalAlignment.Right;
+            //
+            // labelSpecialCurrency
+            //
+            labelSpecialCurrency.AutoSize = true;
+            labelSpecialCurrency.Font = new Font("Segoe UI", 16F);
+            labelSpecialCurrency.Location = new Point(436, 162);
+            labelSpecialCurrency.Name = "labelSpecialCurrency";
+            labelSpecialCurrency.Size = new Size(51, 30);
+            labelSpecialCurrency.TabIndex = 4;
+            labelSpecialCurrency.Text = "CHF";
             //
             // labelSpecialId
             //
@@ -143,6 +159,7 @@
             ((System.ComponentModel.ISupportInitialize)pictureBoxLogo).EndInit();
             groupBoxSpecial.ResumeLayout(false);
             groupBoxSpecial.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)numericUpDownSpecialPrice).EndInit();
             ((System.ComponentModel.ISupportInitialize)pictureBoxSpecial).EndInit();
             ResumeLayout(false);
             PerformLayout();
@@ -154,7 +171,8 @@
         private Label labelBusinessName;
         private Label labelBusinessId;
         private GroupBox groupBoxSpecial;
-        private Label labelSpecialPrice;
+        private NumericUpDown numericUpDownSpecialPrice;
+        private Label labelSpecialCurrency;
         private Label labelSpecialId;
         private Label labelSpecialName;
         private PictureBox pictureBoxSpecial;
