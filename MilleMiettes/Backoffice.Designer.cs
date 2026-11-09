@@ -38,6 +38,7 @@
             labelSpecialName = new Label();
             pictureBoxSpecial = new PictureBox();
             buttonSave = new Button();
+            labelTime = new Label();
             ((System.ComponentModel.ISupportInitialize)pictureBoxLogo).BeginInit();
             groupBoxSpecial.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)numericUpDownSpecialPrice).BeginInit();
@@ -144,11 +145,21 @@
             buttonSave.UseVisualStyleBackColor = true;
             buttonSave.Click += buttonSave_Click;
             //
+            // labelTime
+            //
+            labelTime.AutoSize = true;
+            labelTime.Font = new Font("Segoe UI", 12F);
+            labelTime.Location = new Point(20, 540);
+            labelTime.Name = "labelTime";
+            labelTime.Size = new Size(0, 21);
+            labelTime.TabIndex = 5;
+            //
             // Backoffice
             //
             AutoScaleDimensions = new SizeF(7F, 15F);
             AutoScaleMode = AutoScaleMode.Font;
             ClientSize = new Size(760, 585);
+            Controls.Add(labelTime);
             Controls.Add(buttonSave);
             Controls.Add(groupBoxSpecial);
             Controls.Add(labelBusinessId);
@@ -177,5 +188,6 @@
         private Label labelSpecialName;
         private PictureBox pictureBoxSpecial;
         private Button buttonSave;
+        private Label labelTime;
     }
 }

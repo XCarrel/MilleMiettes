@@ -11,6 +11,12 @@ namespace MilleMiettes
             "MilleMiettes",
             "COM-7777.json");
 
+        // %AppData%\MilleMiettes\time.json
+        private static readonly string TimeFile = Path.Combine(
+            Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData),
+            "MilleMiettes",
+            "time.json");
+
         // The model displayed by the form, kept so it can be saved later
         private readonly Business me;
 
@@ -26,6 +32,9 @@ namespace MilleMiettes
 
             me = LoadBusiness(DataFile);
             Render(me);
+
+            UMDDTime time = JsonSerializer.Deserialize<UMDDTime>(File.ReadAllText(TimeFile))!;
+            labelTime.Text = time.LocalTime.ToString("dd.MM.yyyy HH:mm:ss");
         }
 
         private void buttonSave_Click(object sender, EventArgs e)
