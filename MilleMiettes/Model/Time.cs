@@ -5,15 +5,15 @@ namespace MilleMiettes
     /// </summary>
     public class Time
     {
-        public Time(long unixTimeStamp)
+        public Time(long timestamp)
         {
-            UnixTimeStamp = unixTimeStamp;
+            this.timestamp = timestamp;
         }
 
         // Seconds elapsed since 1970-01-01 00:00:00 UTC
-        public long UnixTimeStamp { get; private set; }
+        public long timestamp { get; private set; }
 
         // The same instant, expressed in the local time zone
-        public DateTime LocalTime => DateTimeOffset.FromUnixTimeSeconds(UnixTimeStamp).LocalDateTime;
+        public DateTime LocalTime => DateTimeOffset.FromUnixTimeSeconds(timestamp).LocalDateTime;
     }
 }

@@ -1,5 +1,7 @@
 using System.Diagnostics;
 using System.Text.Json;
+using System.Text.Json.Nodes;
+using Json.Schema;
 using MQTTnet;
 using MQTTnet.Client;
 using SkiaSharp;
@@ -19,6 +21,10 @@ namespace MilleMiettes
             Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData),
             "MilleMiettes",
             "time.json");
+
+        // Copied next to the executable at build time
+        private static readonly JsonSchema EnvelopeSchema = JsonSchema.FromFile(
+            Path.Combine(AppContext.BaseDirectory, "contracts", "envelope.schema.json"));
 
         private const string MqttBroker = "mqtt.blue.section-inf.ch";
         private const string MqttUsername = "ict";
@@ -68,14 +74,39 @@ namespace MilleMiettes
 
         private Task OnMqttMessageReceived(MqttApplicationMessageReceivedEventArgs e)
         {
-            string payload = e.ApplicationMessage.ConvertPayloadToString();
-            Debug.WriteLine(payload);
+            string message = e.ApplicationMessage.ConvertPayloadToString();
 
-            Time time = JsonSerializer.Deserialize<Time>(payload)!;
+            if (!IsValidEnvelope(message))
+            {
+                return Task.CompletedTask;
+            }
+            Envelope envelope = JsonSerializer.Deserialize<Envelope>(message);
+
+            Time time = JsonSerializer.Deserialize<Time>(envelope.Payload)!;
 
             // MQTTnet raises this event on a background thread: the label must be updated on the UI thread
             BeginInvoke(() => labelTime.Text = time.LocalTime.ToString("dd.MM.yyyy HH:mm:ss"));
             return Task.CompletedTask;
+        }
+
+        /// <summary>
+        ///  Checks that a received message is a well-formed envelope (see contracts\envelope.schema.json).
+        /// </summary>
+        private static bool IsValidEnvelope(string payload)
+        {
+            JsonNode? message;
+            try
+            {
+                message = JsonNode.Parse(payload);
+            }
+            catch (JsonException)
+            {
+                return false; // not even JSON
+            }
+
+            // In draft 2020-12, "format" (uuid, date-time) is only an annotation unless validation is required explicitly
+            EvaluationOptions options = new EvaluationOptions { RequireFormatValidation = true };
+            return EnvelopeSchema.Evaluate(message, options).IsValid;
         }
 
         private void buttonSave_Click(object sender, EventArgs e)

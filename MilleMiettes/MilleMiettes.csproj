@@ -10,9 +10,11 @@
 
   <ItemGroup>
     <None Include="..\COM-7777.json" Link="COM-7777.json" CopyToOutputDirectory="PreserveNewest" />
+    <None Include="contracts\*.schema.json" CopyToOutputDirectory="PreserveNewest" />
   </ItemGroup>
 
   <ItemGroup>
+    <PackageReference Include="JsonSchema.Net" Version="7.3.4" />
     <PackageReference Include="MQTTnet" Version="4.3.7.1207" />
     <PackageReference Include="SkiaSharp" Version="4.154.0" />
   </ItemGroup>
