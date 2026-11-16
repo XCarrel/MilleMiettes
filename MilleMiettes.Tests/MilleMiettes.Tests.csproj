@@ -1,0 +1,22 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net8.0</TargetFramework>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <IsPackable>false</IsPackable>
+    <IsTestProject>true</IsTestProject>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.14.1" />
+    <PackageReference Include="MSTest" Version="3.9.3" />
+    <PackageReference Include="JsonSchema.Net" Version="7.3.4" />
+  </ItemGroup>
+
+  <!-- Schemas and samples are copied next to the test assembly, under contracts\ -->
+  <ItemGroup>
+    <None Include="..\MilleMiettes\contracts\**\*.json" Link="contracts\%(RecursiveDir)%(Filename)%(Extension)" CopyToOutputDirectory="PreserveNewest" />
+  </ItemGroup>
+
+</Project>
