@@ -1,4 +1,7 @@
+using System.Diagnostics;
 using System.Text.Json;
+using MQTTnet;
+using MQTTnet.Client;
 using SkiaSharp;
 
 namespace MilleMiettes
@@ -16,6 +19,14 @@ namespace MilleMiettes
             Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData),
             "MilleMiettes",
             "time.json");
+
+        private const string MqttBroker = "mqtt.blue.section-inf.ch";
+        private const string MqttUsername = "ict";
+        private const string MqttPassword = "321";
+        private const string TimeTopic = "umddcmid3b/time";
+
+        private readonly MqttFactory mqttFactory = new MqttFactory();
+        private readonly IMqttClient mqttClient;
 
         // The model displayed by the form, kept so it can be saved later
         private readonly Business me;
@@ -35,6 +46,36 @@ namespace MilleMiettes
 
             UMDDTime time = JsonSerializer.Deserialize<UMDDTime>(File.ReadAllText(TimeFile))!;
             labelTime.Text = time.LocalTime.ToString("dd.MM.yyyy HH:mm:ss");
+
+            mqttClient = mqttFactory.CreateMqttClient();
+            mqttClient.ApplicationMessageReceivedAsync += OnMqttMessageReceived;
+            Load += Backoffice_Load;
+        }
+
+        private async void Backoffice_Load(object? sender, EventArgs e)
+        {
+            MqttClientOptions options = new MqttClientOptionsBuilder()
+                .WithTcpServer(MqttBroker)
+                .WithCredentials(MqttUsername, MqttPassword)
+                .Build();
+            await mqttClient.ConnectAsync(options, CancellationToken.None);
+
+            MqttClientSubscribeOptions subscribeOptions = mqttFactory.CreateSubscribeOptionsBuilder()
+                .WithTopicFilter(f => f.WithTopic(TimeTopic))
+                .Build();
+            await mqttClient.SubscribeAsync(subscribeOptions, CancellationToken.None);
+        }
+
+        private Task OnMqttMessageReceived(MqttApplicationMessageReceivedEventArgs e)
+        {
+            string payload = e.ApplicationMessage.ConvertPayloadToString();
+            Debug.WriteLine(payload);
+
+            Time time = JsonSerializer.Deserialize<Time>(payload)!;
+
+            // MQTTnet raises this event on a background thread: the label must be updated on the UI thread
+            BeginInvoke(() => labelTime.Text = time.LocalTime.ToString("dd.MM.yyyy HH:mm:ss"));
+            return Task.CompletedTask;
         }
 
         private void buttonSave_Click(object sender, EventArgs e)
