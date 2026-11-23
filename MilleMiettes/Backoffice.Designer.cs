@@ -37,7 +37,8 @@
             labelSpecialId = new Label();
             labelSpecialName = new Label();
             pictureBoxSpecial = new PictureBox();
-            buttonSave = new Button();
+            labelOpenStatus = new Label();
+            buttonOpeningHours = new Button();
             labelTime = new Label();
             ((System.ComponentModel.ISupportInitialize)pictureBoxLogo).BeginInit();
             groupBoxSpecial.SuspendLayout();
@@ -135,15 +136,25 @@
             pictureBoxSpecial.TabIndex = 0;
             pictureBoxSpecial.TabStop = false;
             //
-            // buttonSave
+            // labelOpenStatus
             //
-            buttonSave.Location = new Point(620, 535);
-            buttonSave.Name = "buttonSave";
-            buttonSave.Size = new Size(120, 32);
-            buttonSave.TabIndex = 4;
-            buttonSave.Text = "Enregistrer";
-            buttonSave.UseVisualStyleBackColor = true;
-            buttonSave.Click += buttonSave_Click;
+            labelOpenStatus.Font = new Font("Segoe UI", 12F, FontStyle.Bold);
+            labelOpenStatus.ForeColor = Color.White;
+            labelOpenStatus.Location = new Point(300, 535);
+            labelOpenStatus.Name = "labelOpenStatus";
+            labelOpenStatus.Size = new Size(300, 32);
+            labelOpenStatus.TabIndex = 4;
+            labelOpenStatus.TextAlign = ContentAlignment.MiddleCenter;
+            //
+            // buttonOpeningHours
+            //
+            buttonOpeningHours.Location = new Point(620, 535);
+            buttonOpeningHours.Name = "buttonOpeningHours";
+            buttonOpeningHours.Size = new Size(120, 32);
+            buttonOpeningHours.TabIndex = 6;
+            buttonOpeningHours.Text = "Horaires";
+            buttonOpeningHours.UseVisualStyleBackColor = true;
+            buttonOpeningHours.Click += buttonOpeningHours_Click;
             //
             // labelTime
             //
@@ -160,7 +171,8 @@
             AutoScaleMode = AutoScaleMode.Font;
             ClientSize = new Size(760, 585);
             Controls.Add(labelTime);
-            Controls.Add(buttonSave);
+            Controls.Add(buttonOpeningHours);
+            Controls.Add(labelOpenStatus);
             Controls.Add(groupBoxSpecial);
             Controls.Add(labelBusinessId);
             Controls.Add(labelBusinessName);
@@ -187,7 +199,8 @@
         private Label labelSpecialId;
         private Label labelSpecialName;
         private PictureBox pictureBoxSpecial;
-        private Button buttonSave;
+        private Label labelOpenStatus;
+        private Button buttonOpeningHours;
         private Label labelTime;
     }
 }

@@ -20,5 +20,9 @@ namespace MilleMiettes
         public string Name { get; private set; }
         public string Logo { get; private set; }
         public Special Special { get; private set; }
+        /// <summary>
+        ///  One entry per day of the week. Null when read from a data file written before opening hours existed.
+        /// </summary>
+        public List<OpeningDay>? OpeningHours { get; set; }
     }
 }

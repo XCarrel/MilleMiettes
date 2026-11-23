@@ -1,4 +1,5 @@
 using System.Diagnostics;
+using System.Globalization;
 using System.Text.Json;
 using System.Text.Json.Nodes;
 using Json.Schema;
@@ -37,21 +38,35 @@ namespace MilleMiettes
         // The model displayed by the form, kept so it can be saved later
         private readonly Business me;
 
+        // Last time received, kept to refresh the open/closed status when the hours change
+        private DateTime currentTime;
+
         public Backoffice()
         {
             InitializeComponent();
 
             // First run: seed %AppData% with the copy shipped next to the executable
+            string shippedFile = Path.Combine(AppContext.BaseDirectory, "COM-7777.json");
             if (!File.Exists(DataFile))
             {
-                SaveBusiness(LoadBusiness(Path.Combine(AppContext.BaseDirectory, "COM-7777.json")));
+                SaveBusiness(LoadBusiness(shippedFile));
             }
 
             me = LoadBusiness(DataFile);
+
+            // Data file written before opening hours existed: take the default ones from the shipped copy
+            if (me.OpeningHours == null)
+            {
+                me.OpeningHours = LoadBusiness(shippedFile).OpeningHours ?? new List<OpeningDay>();
+                SaveBusiness(me);
+            }
             Render(me);
 
             UMDDTime time = JsonSerializer.Deserialize<UMDDTime>(File.ReadAllText(TimeFile))!;
-            labelTime.Text = time.LocalTime.ToString("dd.MM.yyyy HH:mm:ss");
+            ShowTime(time.LocalTime);
+
+            // Subscribed after Render so that displaying the initial price does not trigger a save
+            numericUpDownSpecialPrice.ValueChanged += numericUpDownSpecialPrice_ValueChanged;
 
             mqttClient = mqttFactory.CreateMqttClient();
             mqttClient.ApplicationMessageReceivedAsync += OnMqttMessageReceived;
@@ -81,11 +96,12 @@ namespace MilleMiettes
                 return Task.CompletedTask;
             }
             Envelope envelope = JsonSerializer.Deserialize<Envelope>(message);
+            if (envelope.V != 1) return Task.CompletedTask; // ignore unknown envelope versions
 
             Time time = JsonSerializer.Deserialize<Time>(envelope.Payload)!;
 
-            // MQTTnet raises this event on a background thread: the label must be updated on the UI thread
-            BeginInvoke(() => labelTime.Text = time.LocalTime.ToString("dd.MM.yyyy HH:mm:ss"));
+            // MQTTnet raises this event on a background thread: the labels must be updated on the UI thread
+            BeginInvoke(() => ShowTime(time.LocalTime));
             return Task.CompletedTask;
         }
 
@@ -109,14 +125,52 @@ namespace MilleMiettes
             return EnvelopeSchema.Evaluate(message, options).IsValid;
         }
 
-        private void buttonSave_Click(object sender, EventArgs e)
+        /// <summary>
+        ///  Displays the current time and whether the shop is open at that time.
+        /// </summary>
+        private void ShowTime(DateTime time)
         {
-            // Copy the edited values from the form into the model
+            currentTime = time;
+            labelTime.Text = time.ToString("dd.MM.yyyy HH:mm:ss");
+
+            if (IsOpen(time))
+            {
+                labelOpenStatus.Text = "Nous sommes ouverts";
+                labelOpenStatus.BackColor = Color.Green;
+            }
+            else
+            {
+                labelOpenStatus.Text = "Nous sommes fermés";
+                labelOpenStatus.BackColor = Color.DarkOrange;
+            }
+        }
+
+        private bool IsOpen(DateTime time)
+        {
+            OpeningDay? day = me.OpeningHours!.FirstOrDefault(d => d.Day == time.DayOfWeek);
+            if (day == null) return false;
+
+            TimeOnly now = TimeOnly.FromDateTime(time);
+            return day.Slots.Any(s =>
+                now >= TimeOnly.ParseExact(s.Open, "HH:mm", CultureInfo.InvariantCulture) &&
+                now < TimeOnly.ParseExact(s.Close, "HH:mm", CultureInfo.InvariantCulture));
+        }
+
+        private void numericUpDownSpecialPrice_ValueChanged(object? sender, EventArgs e)
+        {
             // The form shows francs, the model stores centimes
             me.Special.Price = (int)Math.Round(numericUpDownSpecialPrice.Value * 100);
-
             SaveBusiness(me);
-            MessageBox.Show($"Enregistré dans {DataFile}", "Backoffice");
+        }
+
+        private void buttonOpeningHours_Click(object sender, EventArgs e)
+        {
+            using OpeningHoursForm form = new OpeningHoursForm(me.OpeningHours!);
+            if (form.ShowDialog(this) != DialogResult.OK) return;
+
+            me.OpeningHours = form.OpeningHours;
+            SaveBusiness(me);
+            ShowTime(currentTime); // the new hours may change the open/closed status
         }
 
         private static Business LoadBusiness(string path)
