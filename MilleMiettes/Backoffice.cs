@@ -31,6 +31,7 @@ namespace MilleMiettes
         private const string MqttUsername = "ict";
         private const string MqttPassword = "321";
         private const string TimeTopic = "umddcmid3b/time";
+        private const string LogTopic = "umddcmid3b/log";
 
         private readonly MqttFactory mqttFactory = new MqttFactory();
         private readonly IMqttClient mqttClient;
@@ -40,6 +41,9 @@ namespace MilleMiettes
 
         // Last time received, kept to refresh the open/closed status when the hours change
         private DateTime currentTime;
+
+        // Open/closed status last displayed, null until the first time is shown
+        private bool? wasOpen;
 
         public Backoffice()
         {
@@ -133,7 +137,8 @@ namespace MilleMiettes
             currentTime = time;
             labelTime.Text = time.ToString("dd.MM.yyyy HH:mm:ss");
 
-            if (IsOpen(time))
+            bool open = IsOpen(time);
+            if (open)
             {
                 labelOpenStatus.Text = "Nous sommes ouverts";
                 labelOpenStatus.BackColor = Color.Green;
@@ -142,6 +147,45 @@ namespace MilleMiettes
             {
                 labelOpenStatus.Text = "Nous sommes fermés";
                 labelOpenStatus.BackColor = Color.DarkOrange;
+            }
+
+            // Only a change is logged: the status known at startup is not an opening or a closing
+            if (wasOpen.HasValue && wasOpen.Value != open)
+            {
+                string text = $"{me.Name} {(open ? "ouvre" : "ferme")} ({time:dd.MM.yyyy HH:mm})";
+                _ = PublishLog(new Log("info", text));
+            }
+            wasOpen = open;
+        }
+
+        /// <summary>
+        ///  Wraps a log in an envelope and publishes it on the log topic. Dropped if the broker is not connected.
+        /// </summary>
+        private async Task PublishLog(Log log)
+        {
+            if (!mqttClient.IsConnected) return;
+
+            Envelope envelope = new Envelope(
+                1,
+                Guid.NewGuid(),
+                me.ID,
+                "*",
+                DateTimeOffset.UtcNow,
+                "log",
+                JsonSerializer.SerializeToElement(log));
+
+            MqttApplicationMessage message = new MqttApplicationMessageBuilder()
+                .WithTopic(LogTopic)
+                .WithPayload(JsonSerializer.Serialize(envelope))
+                .Build();
+
+            try
+            {
+                await mqttClient.PublishAsync(message, CancellationToken.None);
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine($"Log non envoyé : {ex.Message}");
             }
         }
 
